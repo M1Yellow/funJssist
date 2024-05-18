@@ -9,6 +9,7 @@
 本项目**仅供技术参考学习**！有条件的**请支持正版**或申请优惠渠道！
 
 <br/>
+
 ## 使用
 
 1. 下载部署 Oracle JDK 17 / Open JDK 17 环境
@@ -17,5 +18,3 @@
 4. IDEA 打开项目，Maven package 打包
 5. target 目录下的 `doidea-1.0.0-jar-with-dependencies.jar` 即为可用 jar 包，复制到一个目录，比如：`E:\DevRes\doidea`
 6. `idea64.exe.vmoptions` 添加 `-javaagent:E:\DevRes\doidea\doidea-1.0.0-jar-with-dependencies.jar` 即可生效
-
-<br/>
