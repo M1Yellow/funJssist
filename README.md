@@ -18,3 +18,12 @@
 4. IDEA 打开项目，Maven package 打包
 5. target 目录下的 `doidea-1.0.0-jar-with-dependencies.jar` 即为可用 jar 包，复制到一个目录，比如：`E:\DevRes\doidea`
 6. `idea64.exe.vmoptions` 添加 `-javaagent:E:\DevRes\doidea\doidea-1.0.0-jar-with-dependencies.jar` 即可生效
+
+<br/>
+
+## 参考
+
+- [Jetbrains系列破解思路的详细实现步骤探索](https://www.52pojie.cn/thread-1921814-1-1.html)
+- [JetBrains 全家桶系列 2024 破解思路](https://www.52pojie.cn/thread-1919098-1-1.html)
+
+<br/>
