@@ -1,5 +1,7 @@
 package com.doidea.core;
 
+import com.doidea.core.constant.GlobalConstant;
+import com.doidea.core.util.SimpleUtil;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -48,9 +50,10 @@ public class Launcher {
         public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
             //System.out.println(">>>> Class 已加载：" + className);
-            String modifyClassName = "com.intellij.openapi.ui.DialogWrapper";
+            // TODO 包名关键字简单加密混淆一下，稍微减缓 DMCA 的速度
+            String modifyClassName = "com." + SimpleUtil.xor(GlobalConstant.IJ_L_XOR, null) + ".openapi.ui.DialogWrapper";
             String modifyClassMethod = "setTitle";
-            //String modifyClassName = "com.intellij.openapi.ui.impl.DialogWrapperPeerImpl$MyDialog";
+            //String modifyClassName = "com." + SimpleUtil.xor(GlobalConstant.IJ_L_XOR, null) + ".openapi.ui.impl.DialogWrapperPeerImpl$MyDialog";
             //String modifyClassMethod = "getDialogWrapper"; // final class 中的方法也能改
             String loadClassName = modifyClassName.replace(".", "/");
             // 表示找到了这个类
@@ -85,7 +88,7 @@ public class Launcher {
                     //cc.removeMethod(declaredMethod);
 
                     System.out.println(">>>> Target Class: " + "0003");
-                    String mBody = "{com.intellij.openapi.ui.DialogWrapper dw = this.myDialogWrapper.get();\n"
+                    String mBody = "{DialogWrapper dw = this.myDialogWrapper.get();\n"
                             + "System.out.println(\">>>> DialogWrapper title: \" + dw.getTitle());\n"
                             + "if (dw.getTitle().equalsIgnoreCase(\"Licenses\") || dw.getTitle().equalsIgnoreCase(\"许可证\")) {return null};\n"
                             + "return dw;\n}";
