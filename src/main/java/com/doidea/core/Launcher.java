@@ -56,12 +56,12 @@ public class Launcher {
             //String modifyClassName = "com." + SimpleUtil.xor(GlobalConstant.IJ_L_XOR, null) + ".openapi.ui.impl.DialogWrapperPeerImpl$MyDialog";
             //String modifyClassMethod = "getDialogWrapper"; // final class 中的方法也能改
             String loadClassName = modifyClassName.replace(".", "/");
-            // 表示找到了这个类
-            //if (className.contains("DialogWrapperPeerImpl")) {
+            // 找到了指定类
+            //if (className.contains("DialogWrapper")) {
             if (className.equals(loadClassName)) {
                 System.out.println(">>>> Target Class: " + "0000");
                 System.out.println(">>>> Target Class: " + className);
-                // 开始使用当前的javassist修改字节码文件
+                // 使用 javassist 修改字节码文件
                 try {
                     System.out.println(">>>> Target Class: " + "0001");
                     /*
@@ -104,6 +104,7 @@ public class Launcher {
                     // detach 将内存中曾经被 javassist 加载过的 CtClass 类对象移除，下次调用重新走 javassist 加载
                     cc.detach();
                     System.out.println(">>>> Target Class: " + "0004");
+                    // 返回修改后的字节码文件，加载使用
                     return cc.toBytecode();
                 } catch (Exception e) {
                     System.err.println(">>>> do transform Exception: " + e.getMessage());
