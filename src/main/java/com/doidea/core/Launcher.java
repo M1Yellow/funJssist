@@ -49,8 +49,9 @@ public class Launcher {
         @Override
         public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
-            //System.out.println(">>>> Class 已加载：" + className);
+            //System.out.println(">>>> loading Class: " + className);
             // TODO 包名关键字简单加密混淆一下，稍微减缓 DMCA 的速度
+            //  后续版本窗口包名可能会变化，或者加入更严格检测和校验，当下版本能用一两年也不错了，况且新版本总会有新的破-解办法出现！
             String modifyClassName = "com." + SimpleUtil.xor(GlobalConstant.IJ_L_XOR, null) + ".openapi.ui.DialogWrapper";
             String modifyClassMethod = "setTitle";
             //String modifyClassName = "com." + SimpleUtil.xor(GlobalConstant.IJ_L_XOR, null) + ".openapi.ui.impl.DialogWrapperPeerImpl$MyDialog";
@@ -99,7 +100,8 @@ public class Launcher {
                     */
 
                     // TODO 巧妙利用方法内抛异常的方式，终止窗口创建，达到去掉弹窗的效果
-                    declaredMethod.insertBefore("{String title = $1;\nSystem.out.println(title);\nif (title.equalsIgnoreCase(\"Licenses\") || title.equalsIgnoreCase(\"许可证\")) {throw new RuntimeException(\"Licenses dialog abort.\");}}");
+                    //  因为是根据窗口标题判断，目前只对英文版和简体中文版做了判断，其他语言版本，自行添加判断即可
+                    declaredMethod.insertBefore("{String title = $1;\nSystem.out.println(title);\nif (title.trim().equalsIgnoreCase(\"Licenses\") || title.trim().equalsIgnoreCase(\"许可证\")) {throw new RuntimeException(\"Licenses dialog abort.\");}}");
 
                     // detach 将内存中曾经被 javassist 加载过的 CtClass 类对象移除，下次调用重新走 javassist 加载
                     cc.detach();
