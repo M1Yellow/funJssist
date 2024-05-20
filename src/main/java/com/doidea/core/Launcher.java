@@ -88,23 +88,28 @@ public class Launcher {
                     //cc.removeMethod(declaredMethod);
 
                     System.out.println(">>>> Target Class: " + "0003");
+                    // 目前没使用修改 body 的方式
+                    /*
                     String mBody = "{DialogWrapper dw = this.myDialogWrapper.get();\n"
                             + "System.out.println(\">>>> DialogWrapper title: \" + dw.getTitle());\n"
                             + "if (dw.getTitle().equalsIgnoreCase(\"Licenses\") || dw.getTitle().equalsIgnoreCase(\"许可证\")) {return null};\n"
                             + "return dw;\n}";
-
                     System.out.println(">>>> Target Class mBody: " + mBody);
-                    //declaredMethod.setBody(mBody);
+                    declaredMethod.setBody(mBody);
+                    */
+
+                    // TODO 巧妙利用方法内抛异常的方式，终止窗口创建，达到去掉弹窗的效果
                     declaredMethod.insertBefore("{String title = $1;\nSystem.out.println(title);\nif (title.equalsIgnoreCase(\"Licenses\") || title.equalsIgnoreCase(\"许可证\")) {throw new RuntimeException(\"Licenses dialog abort.\");}}");
-                    // detach 将内存中曾经被javassist加载过的CtClass类对象移除，下次调用重新走javassist加载
+
+                    // detach 将内存中曾经被 javassist 加载过的 CtClass 类对象移除，下次调用重新走 javassist 加载
                     cc.detach();
                     System.out.println(">>>> Target Class: " + "0004");
                     return cc.toBytecode();
                 } catch (Exception e) {
-                    System.err.println(">>>> do transform error: " + e.getMessage());
+                    System.err.println(">>>> do transform Exception: " + e.getMessage());
                     e.printStackTrace();
                 } catch (Throwable e) { // 捕获 ClassPool.getDefault() 异常
-                    System.err.println(">>>> do transform error: " + e.getMessage());
+                    System.err.println(">>>> do transform Error: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
