@@ -82,8 +82,13 @@ public class Launcher {
                         cc.defrost();
                     }
                     System.out.println(">>>> Target Class: " + "0002");
-                    //CtMethod declaredMethod = cc.getDeclaredMethod(modifyClassMethod, new CtClass[]{CtClass.charType});
-                    CtMethod declaredMethod = cc.getDeclaredMethod(modifyClassMethod);
+                    //CtMethod declaredMethod = cc.getDeclaredMethod(modifyClassMethod); // 可能会有多个重载方法
+                    //CtClass type 常量只有基础数据类型
+                    //CtMethod declaredMethod = cc.getDeclaredMethod(modifyClassMethod, new CtClass[]{CtClass
+                    // .charType});
+                    // 引用类型，String.class.getName()、int[].class.getName()、byte[].class.getName()
+                    CtClass[] paramTypes = {cp.get(String.class.getName())};
+                    CtMethod declaredMethod = cc.getDeclaredMethod(modifyClassMethod, paramTypes);
                     // 设置访问权限
                     declaredMethod.setModifiers(Modifier.PUBLIC);
                     //cc.removeMethod(declaredMethod);
