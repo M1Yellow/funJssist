@@ -1,5 +1,6 @@
 package com.doidea.core;
 
+import com.doidea.core.bo.TargetMethod;
 import com.doidea.core.method.impl.DoBeforeDispatcher;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -8,7 +9,6 @@ import javassist.NotFoundException;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -21,7 +21,7 @@ public class MyClassFileTransformer implements ClassFileTransformer {
 
         //System.out.println(">>>> loading Class: " + className); // className 为 xxx/xxxx/xxx$xxx 格式
         String targetClassName = className.replace("/", "."); // targetClass 为 xxx.xxxx.xxx$xxx 格式
-        List<String> targetMethods = Launcher.targetClassMethodMap.get(targetClassName);
+        List<TargetMethod> targetMethods = Launcher.targetClassMethodMap.get(targetClassName);
         if (targetMethods == null || targetMethods.isEmpty()) return classfileBuffer;
 
         // 命中目标类和方法
@@ -40,17 +40,11 @@ public class MyClassFileTransformer implements ClassFileTransformer {
      * 获取修改后的字节码
      */
     private byte[] getNewBytes(ClassLoader loader, String targetClassName, byte[] classfileBuffer) {
-        List<String> targetMethods = Launcher.targetClassMethodMap.get(targetClassName);
+        List<TargetMethod> targetMethods = Launcher.targetClassMethodMap.get(targetClassName);
         byte[] newBytes = null;
-        for (String targetMethodName : targetMethods) {
-            switch (targetMethodName) {
-                case "setTitle":
-                    newBytes = DoBeforeDispatcher.INSTANCE.doBeforeJDialogSetTitle(targetClassName, targetMethodName,
-                            new String[]{String.class.getName()});
-                    break;
-                default:
-                    break;
-            }
+        for (TargetMethod targetMethod : targetMethods) {
+            System.out.println(">>>> targetMethod: " + targetMethod.getTargetMethodName());
+            newBytes = DoBeforeDispatcher.INSTANCE.doBeforeJDialogSetTitle(targetMethod);
         }
 
         if (newBytes != null) return newBytes;
@@ -79,7 +73,7 @@ public class MyClassFileTransformer implements ClassFileTransformer {
                 throw new RuntimeException(e);
             }
         }
-        
+
         return paramTypes;
     }
 }

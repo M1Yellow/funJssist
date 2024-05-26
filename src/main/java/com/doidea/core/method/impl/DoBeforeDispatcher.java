@@ -1,6 +1,7 @@
 package com.doidea.core.method.impl;
 
 import com.doidea.core.MyClassFileTransformer;
+import com.doidea.core.bo.TargetMethod;
 import com.doidea.core.method.DoBefore;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -15,8 +16,9 @@ public enum DoBeforeDispatcher implements DoBefore {
     INSTANCE;
 
     @Override
-    public byte[] doBeforeJDialogSetTitle(String targetClassName, String targetMethodName, String[] paramClassNames) {
+    public byte[] doBeforeJDialogSetTitle(Object methodObj) {
         try {
+            TargetMethod targetMethod = (TargetMethod) methodObj;
             /*
             TODO ClassPool.getDefault() 需要依赖 javassist jar 包
             MANIFEST.MF 中指定 lib/javassist-3.30.2-GA.jar 无效
@@ -25,16 +27,16 @@ public enum DoBeforeDispatcher implements DoBefore {
             -Xbootclasspath/a:E:\DevRes\doidea\javassist-3.30.2-GA.jar
             */
             ClassPool classPool = ClassPool.getDefault();
-            CtClass ctClass = classPool.get(targetClassName); // xxx.xxxx.xxx$xxx 格式
-            //CtMethod declaredMethod = cc.getDeclaredMethod(targetMethodName); // 可能会有多个重载方法
+            CtClass ctClass = classPool.get(targetMethod.getTargetClassName()); // xxx.xxxx.xxx$xxx 格式
+            //CtMethod declaredMethod = cc.getDeclaredMethod(targetMethod.getTargetMethodName()); // 可能会有多个重载方法
             // 指定方法参数类型，区分重载方法
             // CtClass type 常量只有基础数据类型
             // 引用类型，String.class.getName()、int[].class.getName()、byte[].class.getName()
             CtClass[] paramTypes = MyClassFileTransformer.classNamesToCtClassArr(classPool,
-                    new String[]{String.class.getName()});
+                    (String[]) targetMethod.getTargetMethodParamType());
             String[] paramTypeNames = Stream.of(paramTypes).map(CtClass::getName).toArray(String[]::new);
-            System.out.println(">>>> " + targetMethodName + " 参数类型：" + Arrays.toString(paramTypeNames));
-            CtMethod declaredMethod = ctClass.getDeclaredMethod(targetMethodName, paramTypes);
+            System.out.println(">>>> " + targetMethod.getTargetMethodName() + " 参数类型：" + Arrays.toString(paramTypeNames));
+            CtMethod declaredMethod = ctClass.getDeclaredMethod(targetMethod.getTargetMethodName(), paramTypes);
             // 设置访问权限
             declaredMethod.setModifiers(Modifier.PUBLIC);
 
