@@ -33,13 +33,13 @@
 
 ## 参考
 
+- [Javassist 官网](http://www.javassist.org)
+- [通过实战走近Java Agent探针技术](https://juejin.cn/post/7025410644463583239)
+- [Java Agent学习](https://www.yijinglab.com/specialized/20211214150751)
+- [Java 类字节码编辑 - Javassist](https://javasec.org/javase/JavaByteCode/Javassist.html)
+- [字节码增强技术探索](https://tech.meituan.com/2019/09/05/java-bytecode-enhancement.html)
 - [Jexbraxxs系列破解思路的详细实现步骤探索](https://www.52pojie.cn/thread-1921814-1-1.html)
 - [JexBraxxs 全家桶系列 2024 破解思路](https://www.52pojie.cn/thread-1919098-1-1.html)
-- [通过实战走近Java Agent探针技术](https://juejin.cn/post/7025410644463583239)
-- [Javassist 官网](http://www.javassist.org)
-- [Java 类字节码编辑 - Javassist](https://javasec.org/javase/JavaByteCode/Javassist.html)
-- [Java Agent学习](https://www.yijinglab.com/specialized/20211214150751)
-- [字节码增强技术探索](https://tech.meituan.com/2019/09/05/java-bytecode-enhancement.html)
 
 
 
