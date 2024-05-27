@@ -1,11 +1,6 @@
 package com.doidea.core;
 
-import com.doidea.core.bo.TargetMethod;
-
 import java.lang.instrument.Instrumentation;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class Launcher {
 
@@ -13,20 +8,6 @@ public class Launcher {
      * javaagent 是否已加载完成
      */
     private static volatile boolean loaded = false;
-
-    /**
-     * 目标类和方法，适用于指定多个类、多个方法
-     */
-    public static final HashMap<String, List<TargetMethod>> targetClassMethodMap = new HashMap<>();
-
-    static {
-        // 无感知自动去掉 License 许可证到期时的弹窗，不退出程序，继续试用
-        targetClassMethodMap.put("com." + "intel" + "lij" + ".openapi.ui.DialogWrapper",
-                new ArrayList<TargetMethod>(1) {{ // 匿名内部类初始化
-                    add(new TargetMethod("com." + "intel" + "lij" + ".openapi.ui" + ".DialogWrapper",
-                            "setTitle", new String[]{String.class.getName()}));
-                }});
-    }
 
     public static void main(String[] args) {
         // 程序自身的日志不会在IDEA日志中打印
@@ -44,13 +25,11 @@ public class Launcher {
         }
 
         try {
-            MyClassFileTransformer transformer = new MyClassFileTransformer();
-            instrumentation.addTransformer(transformer);
-            //instrumentation.addTransformer(transformer, true);
+            Initializer.init(instrumentation);
             loaded = true;
-        } catch (Exception e) {
-            System.err.println(">>>> instrumentation addTransformer failed.");
-            e.printStackTrace();
+        } catch (Throwable e) {
+            System.err.println(">>>> Init instrumentation addTransformer error: " + e.getMessage());
+            //e.printStackTrace();
         }
     }
 }

@@ -1,8 +1,5 @@
-package com.doidea.core.method.impl;
+package com.doidea.core.transformers;
 
-import com.doidea.core.MyClassFileTransformer;
-import com.doidea.core.bo.TargetMethod;
-import com.doidea.core.method.DoBefore;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -11,14 +8,24 @@ import javassist.Modifier;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-public enum DoBeforeDispatcher implements DoBefore {
+/**
+ * Licenses（许可证）弹窗设置标题方法修改
+ */
+public class JDialogSetTitleTransformer implements IMyTransformer {
 
-    INSTANCE;
 
     @Override
-    public byte[] doBeforeJDialogSetTitle(Object methodObj) {
+    public String getTargetClassName() {
+        return "com." + "intel" + "lij" + ".openapi.ui.DialogWrapper";
+    }
+
+    @Override
+    public byte[] transform(String className, byte[] classBytes, int order) throws Exception {
+        return getNewBytes(className, classBytes);
+    }
+
+    private byte[] getNewBytes(String className, byte[] classBytes) {
         try {
-            TargetMethod targetMethod = (TargetMethod) methodObj;
             /*
             TODO ClassPool.getDefault() 需要依赖 javassist jar 包
             MANIFEST.MF 中指定 lib/javassist-3.30.2-GA.jar 无效
@@ -27,16 +34,17 @@ public enum DoBeforeDispatcher implements DoBefore {
             -Xbootclasspath/a:E:\DevRes\doidea\javassist-3.30.2-GA.jar
             */
             ClassPool classPool = ClassPool.getDefault();
-            CtClass ctClass = classPool.get(targetMethod.getTargetClassName()); // xxx.xxxx.xxx$xxx 格式
+            CtClass ctClass = classPool.get(className); // xxx.xxxx.xxx$xxx 格式
+            String targetMethodName = "setTitle";
+            System.out.println(">>>> Target method name: " + targetMethodName);
             //CtMethod declaredMethod = cc.getDeclaredMethod(targetMethod.getTargetMethodName()); // 可能会有多个重载方法
             // 指定方法参数类型，区分重载方法
             // CtClass type 常量只有基础数据类型
             // 引用类型，String.class.getName()、int[].class.getName()、byte[].class.getName()
-            CtClass[] paramTypes = MyClassFileTransformer.classNamesToCtClassArr(classPool,
-                    (String[]) targetMethod.getTargetMethodParamType());
+            CtClass[] paramTypes = {classPool.get(String.class.getName())};
             String[] paramTypeNames = Stream.of(paramTypes).map(CtClass::getName).toArray(String[]::new);
-            System.out.println(">>>> " + targetMethod.getTargetMethodName() + " 参数类型：" + Arrays.toString(paramTypeNames));
-            CtMethod declaredMethod = ctClass.getDeclaredMethod(targetMethod.getTargetMethodName(), paramTypes);
+            System.out.println(">>>> Target method param type: " + Arrays.toString(paramTypeNames));
+            CtMethod declaredMethod = ctClass.getDeclaredMethod(targetMethodName, paramTypes);
             // 设置访问权限
             declaredMethod.setModifiers(Modifier.PUBLIC);
 
@@ -50,6 +58,9 @@ public enum DoBeforeDispatcher implements DoBefore {
             declaredMethod.setBody(mBody);
             */
 
+            // 打印调用堆栈 new RuntimeException().printStackTrace(); 可以写多个 insertBefore，后定义的先执行
+            //declaredMethod.insertBefore("{new RuntimeException().printStackTrace();}");
+
             // TODO 巧妙利用方法内抛异常的方式，终止窗口创建，达到去掉弹窗的效果。异常信息建议不写，防止异常信息上报（有可能会上报）
             //  因为是根据窗口标题判断，目前只对英文版和简体中文版做了判断，其他语言版本，自行添加判断即可
             declaredMethod.insertBefore("{String title = $1;\nSystem.out.println(title);\nif (title.trim().equalsIgnoreCase(\"Licenses\") || title.trim().equalsIgnoreCase(\"许可证\")) {throw new RuntimeException();}}");
@@ -59,10 +70,10 @@ public enum DoBeforeDispatcher implements DoBefore {
             // 返回修改后的字节码文件
             return ctClass.toBytecode();
         } catch (Throwable e) { // 捕获 ClassPool.getDefault() 异常
-            System.err.println(">>>> doBeforeJDialogSetTitle error: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println(">>>> JDialogSetTitleTransformer getNewBytes error: " + e.getMessage());
+            //e.printStackTrace();
         }
 
-        return null;
+        return classBytes;
     }
 }
