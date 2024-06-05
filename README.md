@@ -28,6 +28,15 @@
 7. `idea64.exe.vmoptions` 添加 `-javaagent:E:\DevRes\doidea\doidea-1.0.0-jar-with-dependencies.jar` 即可生效
 
 
+<br/>
+
+**试用到期后会出现一个“试用已到期”提示弹窗，关联了后续的许可证弹窗**
+
+> 去掉这个试用到期提示弹窗解决方案：
+> 1. 最开始就不点试用，直接用这个工具；
+> 2. 点了试用，但还没到期，先去移除试用许可就行了；
+> 3. **试用了且到期了**，删除 C:\Users\xxx\AppData\Roaming\JetBrains\IntelliJIdea2024.1\idea.key 这个文件即可
+
 
 <br/>
 
