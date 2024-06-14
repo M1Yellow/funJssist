@@ -3,7 +3,6 @@ package com.doidea.core.transformers;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
-import javassist.Modifier;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -16,7 +15,8 @@ public class JDialogSetTitleTransformer implements IMyTransformer {
 
     @Override
     public String getTargetClassName() {
-        return "com." + "intel" + "lij" + ".openapi.ui.DialogWrapper";
+        //return "com." + "intel" + "lij" + ".openapi.ui.DialogWrapper"; // Dialog 的封装类
+        return "java.awt.Dialog"; // 直接修改 Dialog 本尊，更具有通用性
     }
 
     @Override
@@ -70,9 +70,9 @@ public class JDialogSetTitleTransformer implements IMyTransformer {
 
             /*
             // 去掉【试用已到期】弹窗，这个弹窗直接抛异常会导致程序异常报错，不能正常启动，不能直接抛异常
-            declaredMethod.insertBefore("{String title = $1;\nSystem.out.println(title);\n" +
+            declaredMethod.insertBefore("{String title = $1;\n" +
                     "if (title.trim().contains(\"trial has expired\") || title.trim().contains(\"试用已到期\")) " +
-                    "{throw new RuntimeException();}}");
+                    "{System.out.println(title);\nthrow new RuntimeException();}}");
             */
 
             // 移除已加载的目标类对象，下次使用时重新加载新的类文件字节码，使修改生效
