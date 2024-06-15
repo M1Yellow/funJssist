@@ -11,8 +11,7 @@ import java.util.stream.Stream;
  * Licenses（许可证）弹窗设置标题方法修改
  */
 public class JDialogSetTitleTransformer implements IMyTransformer {
-
-
+    
     @Override
     public String getTargetClassName() {
         //return "com." + "intel" + "lij" + ".openapi.ui.DialogWrapper"; // Dialog 的封装类

@@ -23,8 +23,9 @@
 3. 下载配置 Maven 3.6.3 （或更高版本）
 4. `git clone url` 克隆项目到本地
 5. IDEA 打开项目（打开 doidea 文件夹即可），Maven package 打包
-6. target 目录下的 `doidea-1.0.0-jar-with-dependencies.jar` 即为可用 jar 包，复制到一个目录，比如：`E:\DevRes\doidea`
-7. `idea64.exe.vmoptions` 添加 `-javaagent:E:\DevRes\doidea\doidea-1.0.0-jar-with-dependencies.jar` 即可生效
+6. target 目录下的 `doidea-2.0.0-jar-with-dependencies.jar` 即为可用 jar 包，复制到一个目录，比如：`E:\DevRes\doidea`
+7. `doidea.properties` 为全局配置文件，**需手动复制到插件同级目录**，否则插件不能正常运行
+8. `idea64.exe.vmoptions` 添加 `-javaagent:E:\DevRes\doidea\doidea-2.0.0-jar-with-dependencies.jar` 即可生效
 
 
 

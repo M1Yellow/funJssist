@@ -12,7 +12,6 @@ import java.util.stream.Stream;
  */
 public class MessagesShowDialogTransformer implements IMyTransformer {
 
-
     @Override
     public String getTargetClassName() {
         return "com." + "intel" + "lij" + ".openapi.ui.Messages";
