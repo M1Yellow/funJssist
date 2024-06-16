@@ -8,6 +8,7 @@ import com.doidea.core.utils.FileUtil;
 import com.doidea.core.utils.StringUtil;
 
 import java.lang.instrument.Instrumentation;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,8 +37,15 @@ public class Initializer {
         String configFilePath = params.get("configFilePath").toString();
         System.out.println(">>>> initConfig configFilePath: " + configFilePath);
         Launcher.propMap = FileUtil.readPropConfig(configFilePath);
-        if (null == Launcher.propMap || Launcher.propMap.isEmpty())
-            throw new RuntimeException("读取全局配置文件失败");
+        if (null == Launcher.propMap || Launcher.propMap.isEmpty()) {
+            System.err.println(">>>> 读取全局配置文件失败，请检查配置文件是否存在");
+            //throw new RuntimeException("读取全局配置文件失败");
+            // TODO 没找到配置文件，或者配置解析失败，默认使用去授权弹窗模式
+            System.out.println(">>>> 没找到配置文件，或者配置解析失败，默认使用去授权弹窗模式");
+            if (null == Launcher.propMap) Launcher.propMap = new HashMap<>();
+            Launcher.propMap.put("mode", "0");
+            return;
+        }
         // 打印全局配置参数
         System.out.println(">>>> 插件全局配置（顺序随机）↓");
         for (Map.Entry<String, String> entry : Launcher.propMap.entrySet()) {
