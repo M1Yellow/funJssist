@@ -34,7 +34,7 @@ public class Initializer {
      */
     public static void initConfig(Map<String, Object> params) throws Exception {
         // 读取全局配置文件
-        String configFilePath = params.get("configFilePath").toString();
+        String configFilePath = StringUtil.obj2Str(params.get("configFilePath"));
         System.out.println(">>>> initConfig configFilePath: " + configFilePath);
         Launcher.propMap = FileUtil.readPropConfig(configFilePath);
         if (null == Launcher.propMap || Launcher.propMap.isEmpty()) {
