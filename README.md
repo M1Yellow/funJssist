@@ -5,9 +5,8 @@
 可应用在 IDEA 启动时，未激活/未试用/试用到期状态下，自动去掉 Licenses（许可证）弹窗，达到【无限试用】的效果。
 
 目前仅短期测试了以下版本正常使用，其他开发工具/版本请自行修改测试。
-- IDEA 2023.3.6
-- IDEA 2024.1.1
-- IDEA 2024.1.2
+- IDEA 2023.3.6+
+- IDEA 2024.1.1+
 
 
 
@@ -27,15 +26,6 @@
 6. target 目录下的 `doidea-1.0.0-jar-with-dependencies.jar` 即为可用 jar 包，复制到一个目录，比如：`E:\DevRes\doidea`
 7. `idea64.exe.vmoptions` 添加 `-javaagent:E:\DevRes\doidea\doidea-1.0.0-jar-with-dependencies.jar` 即可生效
 
-
-<br/>
-
-**试用到期后会出现一个“试用已到期”提示弹窗，关联了后续的许可证弹窗**
-
-> 去掉这个试用到期提示弹窗解决方案：
-> 1. 最开始就不点试用，直接用这个工具；
-> 2. 点了试用，但还没到期，先去移除试用许可就行了；
-> 3. **试用了且到期了**，删除 C:\Users\xxx\AppData\Roaming\JetBrains\IntelliJIdea2024.1\idea.key 这个文件即可
 
 
 <br/>

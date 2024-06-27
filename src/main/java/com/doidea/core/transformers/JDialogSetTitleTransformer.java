@@ -41,12 +41,13 @@ public class JDialogSetTitleTransformer implements IMyTransformer {
             // 指定方法参数类型，区分重载方法
             // CtClass type 常量只有基础数据类型
             // 引用类型，String.class.getName()、int[].class.getName()、byte[].class.getName()
+            // .method public setTitle(Ljava/lang/String;)V
             CtClass[] paramTypes = {classPool.get(String.class.getName())};
             String[] paramTypeNames = Stream.of(paramTypes).map(CtClass::getName).toArray(String[]::new);
             System.out.println(">>>> Target method param type: " + Arrays.toString(paramTypeNames));
             CtMethod declaredMethod = ctClass.getDeclaredMethod(targetMethodName, paramTypes);
-            // 设置访问权限
-            declaredMethod.setModifiers(Modifier.PUBLIC);
+            // 设置访问权限，本身就是 public，不用设置
+            //declaredMethod.setModifiers(Modifier.PUBLIC);
 
             // 目前没使用修改 body 的方式
             /*
@@ -61,9 +62,18 @@ public class JDialogSetTitleTransformer implements IMyTransformer {
             // 打印调用堆栈 new RuntimeException().printStackTrace(); 可以写多个 insertBefore，后定义的先执行
             //declaredMethod.insertBefore("{new RuntimeException().printStackTrace();}");
 
-            // TODO 巧妙利用方法内抛异常的方式，终止窗口创建，达到去掉弹窗的效果。异常信息建议不写，防止异常信息上报（有可能会上报）
+            // TODO 巧妙利用方法内抛异常的方式，终止窗口创建，达到去掉 Licenses（许可证）弹窗的效果。异常信息建议不写，防止异常信息上报（有可能会上报）
             //  因为是根据窗口标题判断，目前只对英文版和简体中文版做了判断，其他语言版本，自行添加判断即可
-            declaredMethod.insertBefore("{String title = $1;\nSystem.out.println(title);\nif (title.trim().equalsIgnoreCase(\"Licenses\") || title.trim().equalsIgnoreCase(\"许可证\")) {throw new RuntimeException();}}");
+            declaredMethod.insertBefore("{String title = $1;\n" +
+                    "if (title.trim().equalsIgnoreCase(\"Licenses\") || title.trim().equalsIgnoreCase(\"许可证\")) " +
+                    "{System.out.println(title);\nthrow new RuntimeException();}}");
+
+            /*
+            // 去掉【试用已到期】弹窗，这个弹窗直接抛异常会导致程序异常报错，不能正常启动，不能直接抛异常
+            declaredMethod.insertBefore("{String title = $1;\nSystem.out.println(title);\n" +
+                    "if (title.trim().contains(\"trial has expired\") || title.trim().contains(\"试用已到期\")) " +
+                    "{throw new RuntimeException();}}");
+            */
 
             // 移除已加载的目标类对象，下次使用时重新加载新的类文件字节码，使修改生效
             ctClass.detach();
@@ -71,7 +81,7 @@ public class JDialogSetTitleTransformer implements IMyTransformer {
             return ctClass.toBytecode();
         } catch (Throwable e) { // 捕获 ClassPool.getDefault() 异常
             System.err.println(">>>> JDialogSetTitleTransformer getNewBytes error: " + e.getMessage());
-            //e.printStackTrace();
+            e.printStackTrace();
         }
 
         return classBytes;
